@@ -21,3 +21,12 @@ Revise los despliegues fallidos de Coolify con una decisión Jev acotada y versi
 Sin conexión: `python3 app.py --demo` y `python3 -m unittest discover -s tests -v`. Para una instalación real, defina en privado `COOLIFY_WEBHOOK_SECRET` (cadena aleatoria de al menos 16 caracteres), `COOLIFY_ORIGIN`, `COOLIFY_API_TOKEN` y `TYPESAFE_API_KEY`. Ejecute `python3 app.py --serve` y `python3 app.py --worker` como procesos separados y consulte `python3 app.py --results`. Configure la URL del webhook de notificación como `https://SU-ENTRADA-AUTENTICADA/webhook/SU-SECRETO`. El servicio escucha solo en localhost; sitúe una entrada HTTPS delante. Evite registrar la URL en los logs de acceso. Coolify no firma estos webhooks y su comportamiento documentado no reintenta solo por una respuesta distinta de 2xx; por eso se guarda primero en una cola SQLite persistente. Una interrupción entre la respuesta de Jev y la confirmación SQLite puede repetir la llamada. La ocultación de secretos es parcial; establezca una política adecuada antes de enviar registros sensibles. La API Jev se probó con datos sintéticos; no había una instancia Coolify real disponible.
 
 Source: [Coolify webhook delivery](https://coolify.io/docs/core/notifications/channels/webhook/setup). License: MIT. Tag: `v0.1.0`.
+
+
+## 2026-11-05 — FR / EN / ES
+
+FR : `queue_health(db, now=...)` expose état de la file, reprises dues/différées et nombre d’essais sans lire ni publier les logs de déploiement. Horloge injectable pour tests ; ne conclut pas qu’un déploiement est réparé et ne relance aucun job.
+
+EN: `queue_health(db, now=...)` exposes queue state, due/delayed retries and attempt counts without reading or publishing deployment logs. Injectable clock; does not conclude deployment repair or restart jobs.
+
+ES: `queue_health(db, now=...)` expone estado de cola, reintentos pendientes/diferidos y ensayos sin leer ni publicar logs. Reloj inyectable; no concluye reparación ni reinicia tareas.

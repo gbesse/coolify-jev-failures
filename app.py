@@ -198,3 +198,12 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+def queue_health(db, *, now=None):
+    import math
+    now=time.time()if now is None else now
+    if type(now)not in(int,float)or not math.isfinite(now):raise ValueError("Heure invalide / Invalid time / Hora inválida")
+    rows=db.execute("SELECT status,attempts,next_attempt_at FROM events").fetchall()
+    pending=[r for r in rows if r[0]=='pending'];due=[r for r in pending if r[2]<=now]
+    return {'total':len(rows),'done':sum(r[0]=='done'for r in rows),'pending':len(pending),'due':len(due),'delayed':len(pending)-len(due),'attempts':sum(r[1]for r in rows),'next_pending_at':min((r[2]for r in pending),default=None),'contains_log_text':False}
