@@ -30,3 +30,12 @@ FR : `queue_health(db, now=...)` expose état de la file, reprises dues/différ�
 EN: `queue_health(db, now=...)` exposes queue state, due/delayed retries and attempt counts without reading or publishing deployment logs. Injectable clock; does not conclude deployment repair or restart jobs.
 
 ES: `queue_health(db, now=...)` expone estado de cola, reintentos pendientes/diferidos y ensayos sin leer ni publicar logs. Reloj inyectable; no concluye reparación ni reinicia tareas.
+
+
+## 2026-11-12 — FR / EN / ES
+
+FR : Replanifier une classification locale en attente sans réinitialiser ses tentatives ni redéployer.
+
+EN: Reschedule pending local classification without resetting attempts or redeploying.
+
+ES: Reprogramar clasificación local pendiente sin reiniciar intentos ni desplegar.
