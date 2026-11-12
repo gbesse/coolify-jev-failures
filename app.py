@@ -207,3 +207,13 @@ def queue_health(db, *, now=None):
     rows=db.execute("SELECT status,attempts,next_attempt_at FROM events").fetchall()
     pending=[r for r in rows if r[0]=='pending'];due=[r for r in pending if r[2]<=now]
     return {'total':len(rows),'done':sum(r[0]=='done'for r in rows),'pending':len(pending),'due':len(due),'delayed':len(pending)-len(due),'attempts':sum(r[1]for r in rows),'next_pending_at':min((r[2]for r in pending),default=None),'contains_log_text':False}
+
+def reschedule_pending(db,uuid,*,now=None):
+    error='Replanification invalide / Invalid reschedule / Reprogramación inválida'
+    import math
+    if not isinstance(uuid,str)or not UUID.fullmatch(uuid):raise ValueError(error)
+    clock=time.time()if now is None else now
+    if type(clock)not in(int,float)or not math.isfinite(clock)or clock<0:raise ValueError(error)
+    with db:
+        changed=db.execute("UPDATE events SET next_attempt_at=? WHERE uuid=? AND status='pending'",(clock,uuid)).rowcount
+    return {'rescheduled':changed==1,'uuid':uuid,'next_attempt_at':clock if changed else None,'deployment_restarted':False,'attempts_reset':False}
